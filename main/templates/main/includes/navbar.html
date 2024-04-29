@@ -1,0 +1,179 @@
+{% load static %}
+<div class="sidebar-wrapper" data-simplebar="true">
+    <div class="sidebar-header">
+        <div>
+            <img src="{% static 'main/images/logo-icon.png' %}" class="logo-icon" alt="logo icon">
+        </div>
+        <div>
+            <h4 class="logo-text">FuelMaster</h4>
+        </div>
+        <div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i>
+        </div>
+     </div>
+    <!--navigation-->
+    <ul class="metismenu" id="menu">
+        <li>
+            <a class="has-arrow" href="javascript:;">
+                <div class="parent-icon"><i class="bx bx-menu"></i>
+                </div>
+                <div class="menu-title">Inventory</div>
+            </a>
+            <ul>
+                <li> <a href="{% url 'inventory:virtual_warehouse' %}"><i class='bx bx-radio-circle'></i>Virtual Warehouse</a>
+                </li>
+                <li> <a class="has-arrow" href="javascript:;"><i class='bx bx-radio-circle'></i>Warehouse</a>
+                    <ul>
+                        <li> <a href="{% url 'inventory:transfers' %}"><i class='bx bx-radio-circle'></i>Stock Transfer</a>
+                        </li>
+                        <li> <a class="has-arrow" href="javascript:;"><i class='bx bx-radio-circle'></i>Purchases</a>
+                            <ul>
+                                <li> <a href="{% url 'inventory:orders' %}"><i class='bx bx-radio-circle'></i>Orders</a>
+                                </li>
+                                <li> <a href="{% url 'inventory:receivings' %}"><i class='bx bx-radio-circle'></i>Receivings</a>
+                                </li>
+                                <li> <a href="{% url 'inventory:bills' %}"><i class='bx bx-radio-circle'></i>Bills</a>
+                                </li>
+                              
+                            </ul>
+                            
+                        </li>
+                    </ul>
+                    <li> <a href="{% url 'main:branch' %}"><i class='bx bx-radio-circle'></i>Products</a>
+                    </li>
+                    <li> <a href="{% url 'inventory:suppliers' %}"><i class='bx bx-radio-circle'></i>Suppliers</a>
+                    </li>
+                </li>
+                
+            </ul>
+        </li>
+        
+       
+        
+       
+        
+    </ul>
+    <!--end navigation-->
+</div>
+<!--end sidebar wrapper -->
+<!--start header -->
+<header>
+    <div class="topbar d-flex align-items-center">
+        <nav class="navbar navbar-expand gap-3">
+           
+
+             
+
+
+              <div class="top-menu ms-auto">
+                <ul class="navbar-nav align-items-center gap-1">
+                    
+                    
+
+                    <li class="nav-item dropdown dropdown-app">
+                       
+                        <div class="dropdown-menu dropdown-menu-end p-0">
+                            <div class="app-container p-2 my-2">
+                              <div class="row gx-0 gy-2 row-cols-3 justify-content-center p-2">
+                                 
+                                
+        
+                              </div><!--end row-->
+        
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown dropdown-large">
+                        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" data-bs-toggle="dropdown"><span class="alert-count">7</span>
+                            <i class='bx bx-bell'></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a href="javascript:;">
+                                <div class="msg-header">
+                                    <p class="msg-header-title">Notifications</p>
+                                    <p class="msg-header-badge">2 New</p>
+                                </div>
+                            </a>
+                            <div class="header-notifications-list">
+                               
+                                <a class="dropdown-item" href="javascript:;">
+                                    <div class="d-flex align-items-center">
+                                        <div class="notify bg-light-danger text-danger">dc
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="msg-name">New Company <span class="msg-time float-end">2 min
+                                        ago</span></h6>
+                                            <p class="msg-info">Company x Registered by</p>
+                                        </div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item" href="javascript:;">
+                                    <div class="d-flex align-items-center">
+                                        <div class="notify bg-light-danger text-danger">NM
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="msg-name">New Orders <span class="msg-time float-end">2 min
+                                        ago</span></h6>
+                                            <p class="msg-info">Order XYM67G Placed by user3</p>
+                                        </div>
+                                    </div>
+                                </a>
+                               
+                               
+                            </div>
+                            <a href="javascript:;">
+                                <div class="text-center msg-footer">
+                                    <button class="btn btn-primary w-100">View All Notifications</button>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown dropdown-large">
+                       
+                        <div class="dropdown-menu dropdown-menu-end">
+                            
+                            <div class="header-message-list">
+                               
+                               
+                            </div>
+                          
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="user-box dropdown px-3">
+                <a class="d-flex align-items-center nav-link dropdown-toggle gap-3 dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="user-info">
+                        <p class="user-name mb-0">{{user.username}}</p>
+                        <p class="designattion mb-0">
+                            {% if user.is_superuser %}
+                                Super User
+                            {% elif user.access_level == 1 %}
+                                Super User
+                            {% elif user.access_level == 2 %}
+                                Admin
+                            {% elif user.access_level == 3 %}
+                                Manager
+                            {% elif user.access_level == 4 %}
+                                Cashier
+                            {% else %}
+                                Test user
+                            {% endif %}
+                        </p>                        
+                    </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i class="bx bx-user fs-5"></i><span>Profile</span></a>
+                    </li>
+                   
+                        <div class="dropdown-divider mb-0"></div>
+                    </li>
+                    {% if user.is_authenticated%}
+                    <li><a class="dropdown-item d-flex align-items-center" href="{% url 'users:logout' %}"><i class="bx bx-log-out-circle"></i><span>Logout</span></a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>

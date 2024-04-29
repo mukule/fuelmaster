@@ -1,0 +1,72 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item"><a href="{% url 'main:index' %}">Dashboard</i></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Categories</li>
+                    </ol>
+                </nav>
+            </div>
+           
+        </div>
+        <!--end breadcrumb-->
+      
+        <div class="card">
+            <div class="card-body">
+                <div class="d-lg-flex align-items-center mb-4 gap-3">
+                    <div class="position-relative">
+                        <input type="text" class="form-control ps-5 radius-30" placeholder="Search Category"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
+                    </div>
+                  <div class="ms-auto"><a href="{% url 'inventory:create_category' branch_id=branch.pk %}" class="btn btn-primary radius-30 mt-2 mt-lg-0"><i class="bx bxs-plus-square"></i>Add New Category</a></div>
+                </div>
+                {% if categories %}
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Category Name</th>
+                                <th>View Products</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td> 
+                                <td>{{ category.name }}</td> 
+                                <td>
+                                    <a href="{% url 'inventory:category_detail' category_id=category.pk %}" class="btn btn-primary btn-sm radius-30 px-4">View Products</a>
+                                </td>
+                                <td>
+                                    <div class="d-flex order-actions">
+                                        <a href="{% url 'inventory:edit_category' category.id %}" class=""><i class='bx bxs-edit'></i></a>  <!-- Link to edit category -->
+                                        <a href="{% url 'inventory:delete_category' category.id %}" class="ms-3"><i class='bx bxs-trash'></i></a>  <!-- Link to delete category -->
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="title text-center">No Product categories Found</p>
+                {% endif %}
+                
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+{% endblock content %}

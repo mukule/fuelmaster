@@ -1,0 +1,88 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+           
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item"><a href="{% url 'main:index' %}">Dashboard</i></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">{{branch.company.name}}</li>
+                        <li class="breadcrumb-item active" aria-current="page">{{branch.name}}</li>
+                        <li class="breadcrumb-item active" aria-current="page">Receive Virtual Product</li>
+                    </ol>
+                </nav>
+            </div>
+           
+        </div>
+        <!--end breadcrumb-->
+        <div class="row">
+            <div class="col-xl-9 mx-auto">
+                <h6 class="mb-4  text-center mt-2">Receive Product</h6>
+                <div class="text-center mb-2">
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if message.tags == 'success' %}
+                                <div class="alert alert-success alert-dismissible" role="alert">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                    {{ message|safe|escape }}
+                                </div>
+                            {% elif message.tags == 'error' %}
+                                <div class="alert alert-danger alert-dismissible" role="alert">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                    {{ message|safe }}
+                                </div>
+                            {% elif message.tags == 'info' %}
+                                <div class="alert alert-info alert-dismissible" role="alert">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                    {{ message|safe|escape }}
+                                </div>
+                            {% elif message.tags == 'warning' %}
+                                <div class="alert alert-warning alert-dismissible" role="alert">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                    {{ message|safe|escape }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    
+                    </div>
+               
+                <div class="card">
+                    <div class="card-body">
+                        <form class="row g-3" method="post">
+                            {% csrf_token %}
+                            <div class="col-md-12">
+                                <label for="input1" class="form-label">Received From</label>
+                                {{ form.receive_from}}
+                            </div>
+                            <div class="col-md-12">
+                                <label for="input1" class="form-label">Received From ID</label>
+                                {{ form.receiver_id}}
+                            </div>
+                            <div class="col-md-12">
+                                <label for="input1" class="form-label">Received Quantity</label>
+                                {{ form.quantity}}
+                            </div>
+                           
+                            <div class="form-row text-center">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                               </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!--end row-->
+    </div>
+</div>
+
+{% endblock content %}
