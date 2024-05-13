@@ -14,6 +14,7 @@
                         <li class="breadcrumb-item"><a href="{% url 'main:index' %}">Dashboard</i></a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">{{company.name}}</li>
+                        <li class="breadcrumb-item active" aria-current="page">Add Adjustment Reason</li>
                     </ol>
                 </nav>
             </div>
@@ -22,25 +23,20 @@
         <!--end breadcrumb-->
         <div class="row">
             <div class="col-xl-9 mx-auto">
-                <h6 class="mb-0 text-center">Add Branch</h6>
-                <hr/>
+                <h6 class="mb-4 text-center mt-2">Add Adjustment Reason</h6>
+               
                 <div class="card">
                     <div class="card-body">
-                        <form method="post">
+                        <form class="row g-3" method="post">
                             {% csrf_token %}
-                           <div class="form-row form-group mb-3">
-                            {{ form.name}}
-                           </div>
-                           <div class="form-row form-group mb-3">
-                            {{ form.contact_email}}
-                           </div>
-                           <div class="form-row form-group mb-3">
-                            {{ form.address}}
-                           </div>
-                          
-                           <div class="form-row text-center">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                           </div>
+                            <div class="col-md-12">
+                                <label for="input1" class="form-label">Adjustment Reason</label>
+                                {{ form.name}}
+                            </div>
+                           
+                            <div class="form-row text-center">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                               </div>
                         </form>
                     </div>
                 </div>

@@ -12,9 +12,8 @@
                     <ol class="breadcrumb mb-0 p-0">
                         <li class="breadcrumb-item"><a href="{% url 'main:index' %}">Dashboard</i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">{{branch.company.name}}</li>
-                        <li class="breadcrumb-item active" aria-current="page">{{branch.name}}</li>
-                        <li class="breadcrumb-item active" aria-current="page">Stock Transfers</li>
+                        <li class="breadcrumb-item active" aria-current="page">{{company.name}}</li>
+                        <li class="breadcrumb-item active" aria-current="page">Transfer Orders</li>
                     </ol>
                 </nav>
             </div>
@@ -28,7 +27,7 @@
                     <div class="position-relative">
                         <input type="text" class="form-control ps-5 radius-30" placeholder="Search Order"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
                     </div>
-                  <div class="ms-auto"><a href="{% url 'inventory:create_product_transfer' %}" class="btn btn-primary radius-30 mt-2 mt-lg-0"><i class="bx bxs-plus-square"></i>Transfer Product</a></div>
+                  <div class="ms-auto"><a href="{% url 'inventory:transfer_product' %}" class="btn btn-primary radius-30 mt-2 mt-lg-0"><i class="bx bxs-plus-square"></i>Transfer Product</a></div>
                 </div>
                 <div class="text-center mb-2">
 
@@ -66,14 +65,14 @@
                         <thead class="table-light">
                             <tr>
                                 <th>#</th>
+                                <th>Order No.</th>
                                 <th>Product</th>
                                 <th>Quantity</th>
                                 <th>Source</th>
+                                <th>Destination</th>
                                 <th>Transfer By</th>
-                                <th>Received By</th>
-                                <th>Status</th>
                                 <th>Date</th>
-                                <th>Actions</th>
+                               
                             </tr>
                         </thead>
                         <tbody>
@@ -81,28 +80,13 @@
                             <tr>
                                 
                                 <td>{{ forloop.counter }}</td>
+                                <td>{{transfer.transfer_order}}</td>
                                 <td>{{ transfer.product.name }}-{{transfer.product.product_code}}</td>
                                 <td>{{ transfer.quantity }} ({{transfer.product.unit}}s)</td>
-                                <th>{{transfer.branch}}</th>
+                                <th>{{transfer.source_warehouse}}</th>
+                                <th>{{transfer.destination_warehouse}}</th>
                                 <td>{{ transfer.transfer_by }}</td>
-                                <td>{{ transfer.received_by }}</td>
-                                <td>{{ transfer.transfer_date }}</td>
-                                <td>
-                                    {% if transfer.received %}
-                                    <div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3">
-                                        <i class='bx bxs-circle align-middle me-1'></i>Received</div>
-                                    {% else %}
-                                    <div class="badge rounded-pill text-warning bg-light-warning p-2 text-uppercase px-3">
-                                        <i class='bx bxs-circle align-middle me-1'></i>Pending</div>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if not transfer.received %}
-                                        <a class="btn btn-primary btn-sm radius-30 px-4" href="{% url 'inventory:receive_product_transfer' transfer.id %}">Receive</a>
-                                    {% else %}
-                                        <span class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3">No Actions</span>
-                                    {% endif %}
-                                </td>
+                                <td>{{ transfer.date }}</td>
                                 
                             </tr>
                             {% endfor %}

@@ -588,3 +588,381 @@ def receive_product_transfer(request, transfer_id):
 
     messages.success(request, 'Product transfer received successfully.')
     return redirect('inventory:transfers')
+
+
+@login_required
+def create_warehouse(request):
+    branch = request.user.branch
+    company = request.user.company
+    if request.method == 'POST':
+        form = WarehouseForm(request.POST)
+        if form.is_valid():
+            warehouse = form.save(commit=False)
+            warehouse.branch = request.user.branch
+            warehouse.save()
+            return redirect('company:company_detail', pk=company.pk)
+    else:
+        form = WarehouseForm()
+    return render(request, 'inventory/create_warehouse.html', {'form': form, 'branch': branch})
+
+
+@login_required
+def create_sales_account(request):
+    branch = request.user.branch
+    company = request.user.company
+    if request.method == 'POST':
+        form = SalesAccountForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('company:company_detail', pk=company.pk)
+    else:
+        form = SalesAccountForm()
+    return render(request, 'inventory/create_sales_account.html', {'form': form, 'branch': branch})
+
+
+@login_required
+def create_purchases_account(request):
+    company = request.user.company
+    branch = request.user.branch
+    if request.method == 'POST':
+        form = PurchasesAccountForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('company:company_detail', pk=company.pk)
+    else:
+        form = PurchasesAccountForm()
+    return render(request, 'inventory/create_purchases_account.html', {'form': form, 'branch': branch})
+
+
+@login_required
+def company_products(request):
+
+    company = request.user.company
+    # Retrieve all products associated with warehouses of the user's company
+    products = Product.objects.all()
+
+    return render(request, 'inventory/company_products.html', {'products': products, 'company': company})
+
+
+@login_required
+def product(request, product_id):
+    company = request.user.company
+    # Retrieve the product object based on the product_id
+    product = get_object_or_404(Product, id=product_id)
+
+    return render(request, 'inventory/product.html', {'product': product, 'company': company})
+
+
+@login_required
+def create_company_products(request):
+    company = request.user.company
+    if request.method == 'POST':
+        # If the form has been submitted, process the data
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Save the form data to create a new product
+            form.save()
+            # Redirect to a success page or any other desired page
+            messages.success(request, 'Product created successfully!')
+            return redirect('inventory:company_products')
+        else:
+            # If form is not valid, display error messages
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field.capitalize()}: {error}')
+    else:
+        # If the request is a GET request, create a blank form
+        form = ProductForm()
+    return render(request, 'inventory/create_company_products.html', {'form': form, 'company': company})
+
+
+@login_required
+def edit_product(request, product_id):
+    company = request.user.company
+    # Retrieve the product object based on the product_id
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.method == 'POST':
+        # If the form has been submitted, process the data
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            # Save the form data to update the existing product
+            form.save()
+            # Redirect to a success page or any other desired page
+            return redirect('inventory:company_products')
+    else:
+        # If the request is a GET request, prepopulate the form with existing product data
+        form = ProductForm(instance=product)
+
+    return render(request, 'inventory/edit_product.html', {'form': form, 'company': company})
+
+
+@login_required
+def composite_products(request):
+
+    company = request.user.company
+    # Retrieve all products associated with warehouses of the user's company
+    products = CompositeProduct.objects.all()
+
+    return render(request, 'inventory/composite_products.html', {'products': products, 'company': company})
+
+
+@login_required
+def composite_product_detail(request, composite_product_id):
+    composite_product = get_object_or_404(
+        CompositeProduct, pk=composite_product_id)
+    company = request.user.company
+    products = composite_product.components.all()
+    print(products)
+    return render(request, 'inventory/composite_product_detail.html', {'product': composite_product, 'products': products, 'company': company})
+
+
+@login_required
+def create_composite_product(request):
+    if request.method == 'POST':
+        form = CompositeProductForm(request.POST)
+        if form.is_valid():
+            components = form.cleaned_data.get('components')
+
+            # Check if all products belong to the same warehouse
+            warehouse = None
+            for product in components:
+                if not warehouse:
+                    warehouse = product.warehouse
+                elif warehouse != product.warehouse:
+                    messages.error(
+                        request, "All selected products must belong to the same warehouse.")
+                    return render(request, 'inventory/composite_product_create.html', {'form': form})
+
+            # Calculate the total buying and selling prices based on the sum of prices of components
+            total_buying_price = sum(
+                product.buying_price for product in components)
+            total_selling_price = sum(
+                product.selling_price for product in components)
+
+            # Create and save the composite product with its components
+            composite_product = form.save(commit=False)
+            composite_product.buying_price = total_buying_price
+            composite_product.selling_price = total_selling_price
+            composite_product.save()
+
+            # Add the selected components to the composite product
+            composite_product.components.set(components)
+
+            # Save the form to ensure that the IDs of the components are saved
+            form.save_m2m()
+
+            return redirect('inventory:composite_products')
+    else:
+        form = CompositeProductForm()
+    return render(request, 'inventory/composite_product_create.html', {'form': form})
+
+
+@login_required
+def edit_composite_product(request, composite_product_id):
+    composite_product = get_object_or_404(
+        CompositeProduct, pk=composite_product_id)
+
+    if request.method == 'POST':
+        form = CompositeProductForm(request.POST, instance=composite_product)
+        if form.is_valid():
+            components = form.cleaned_data.get('components')
+
+            # Check if all products belong to the same warehouse
+            warehouse = None
+            for product in components:
+                if not warehouse:
+                    warehouse = product.warehouse
+                elif warehouse != product.warehouse:
+                    messages.error(
+                        request, "All selected products must belong to the same warehouse.")
+                    return render(request, 'inventory/composite_product_edit.html', {'form': form, 'composite_product': composite_product})
+
+            # Calculate the total buying and selling prices based on the sum of prices of components
+            total_buying_price = sum(
+                product.buying_price for product in components)
+            total_selling_price = sum(
+                product.selling_price for product in components)
+
+            # Update composite product details
+            composite_product = form.save(commit=False)
+            composite_product.buying_price = total_buying_price
+            composite_product.selling_price = total_selling_price
+            composite_product.save()
+
+            # Update the selected components of the composite product
+            composite_product.components.set(components)
+
+            # Save the form to ensure that the IDs of the components are updated
+            form.save_m2m()
+
+            return redirect('inventory:composite_product_detail', composite_product_id=composite_product_id)
+    else:
+        form = CompositeProductForm(instance=composite_product)
+
+    return render(request, 'inventory/composite_product_edit.html', {'form': form, 'composite_product': composite_product})
+
+
+@login_required
+def create_adjustment(request, product_id):
+    company = request.user.company
+    # Get the product object
+    product = get_object_or_404(Product, pk=product_id)
+
+    # Get initial data for the form
+    initial_data = {}
+    if product:
+        initial_data['product'] = product
+        initial_data['warehouse'] = product.warehouse
+        initial_data['branch'] = product.warehouse.branch
+        # Set the company to the company of the logged-in user
+        initial_data['company'] = request.user.company
+
+    if request.method == 'POST':
+        form = AdjustmentForm(request.POST)
+        if form.is_valid():
+            # Check if the selected warehouse belongs to the selected branch
+            branch = form.cleaned_data['branch']
+            warehouse = form.cleaned_data['warehouse']
+            if warehouse.branch != branch:
+                messages.error(request, "Branch has no such warehouse.")
+                return redirect('inventory:create_adjustment', product_id=product_id)
+
+            # Check if the product is available in the selected warehouse
+            if product.warehouse != warehouse:
+                messages.error(
+                    request, "Product not available in the selected warehouse.")
+                return redirect('inventory:create_adjustment', product_id=product_id)
+
+            # Calculate the adjusted quantity
+            quantity = form.cleaned_data['quantity']
+            current_quantity = product.quantity
+            Adjustment.adjusted_quantity = current_quantity - quantity
+
+            # Update product quantity
+            product.quantity = quantity
+            product.save()
+
+            # Save the adjustment
+            adjustment = form.save(commit=False)
+            adjustment.product = product
+            adjustment.adjusted_by = request.user
+            adjustment.adjusted_quantity = current_quantity
+            adjustment.save()
+
+            return redirect('inventory:company_adjustments')
+    else:
+        form = AdjustmentForm(initial=initial_data)
+
+    return render(request, 'inventory/create_adjustment.html', {'form': form, 'product': product, 'company': company})
+
+
+@login_required
+def company_adjustments(request):
+
+    company = request.user.company
+
+    adjustments = Adjustment.objects.all()
+
+    return render(request, 'inventory/company_adjustments.html', {'adjustments': adjustments, 'company': company})
+
+
+@login_required
+def select_product_to_adjust(request):
+    # Retrieve the company of the logged-in user
+    company = request.user.company
+
+    # Retrieve all warehouses belonging to the company
+    warehouses = Warehouse.objects.filter(branch__company=company)
+
+    # Retrieve all products associated with the warehouses
+    products = Product.objects.filter(warehouse__in=warehouses)
+
+    return render(request, 'inventory/select_product_to_adjust.html', {'products': products})
+
+
+@login_required
+def create_adjustment_reason(request):
+    company = request.user.company
+    if request.method == 'POST':
+        form = ReasonForm(request.POST)
+        if form.is_valid():
+            AdjustmentReason.company = company
+            form.save()
+            return redirect('inventory:reasons')
+    else:
+        form = ReasonForm()
+    return render(request, 'inventory/create_reason.html', {'form': form, 'company': company})
+
+
+@login_required
+def reasons(request):
+
+    company = request.user.company
+
+    adjustments = AdjustmentReason.objects.all()
+
+    return render(request, 'inventory/adjustment_reasons.html', {'company': company, 'reasons': adjustments})
+
+
+@login_required
+def transfers(request):
+
+    company = request.user.company
+
+    transfers = Transfer.objects.all()
+
+    return render(request, 'inventory/transfers.html', {'company': company, 'transfers': transfers})
+
+
+@login_required
+def transfer_product(request):
+    company = request.user.company
+    if request.method == 'POST':
+        form = TransferForm(request.POST)
+        if form.is_valid():
+            transfer = form.save(commit=False)
+            # Set the company to the company of the logged-in user
+            transfer.company = request.user.company
+
+            # Set the transfer_by field to the logged-in user
+            transfer.transfer_by = request.user
+
+            # Check if source and destination warehouses are different
+            if transfer.source_warehouse == transfer.destination_warehouse:
+                messages.error(
+                    request, "Source and destination warehouses cannot be the same.")
+                return redirect('inventory:transfer_product')
+
+            # Check if the selected product exists in the source warehouse
+            if not transfer.source_warehouse.product_set.filter(pk=transfer.product.pk).exists():
+                messages.error(
+                    request, "Product does not exist in the source warehouse.")
+                return redirect('inventory:transfer_product')
+
+            # Check if the quantity is not more than the available quantity
+            if transfer.quantity > transfer.product.quantity:
+                messages.error(
+                    request, "Quantity cannot be more than available quantity.")
+                return redirect('inventory:transfer_product')
+
+            # Check if the product exists in the destination warehouse
+            try:
+                existing_transfer = Transfer.objects.get(
+                    product=transfer.product, destination_warehouse=transfer.destination_warehouse)
+                existing_transfer.quantity += transfer.quantity
+                existing_transfer.save()
+            except Transfer.DoesNotExist:
+                transfer.save()
+
+            # Update the quantity in the source warehouse
+            transfer.product.quantity -= transfer.quantity
+            transfer.product.save()
+
+            messages.success(request, "Product transferred successfully.")
+            return redirect('inventory:transfers')
+
+    else:
+        form = TransferForm()
+
+    return render(request, 'inventory/create_product_transfer.html', {'form': form, 'company': company})

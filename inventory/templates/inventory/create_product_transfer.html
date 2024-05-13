@@ -13,9 +13,8 @@
                     <ol class="breadcrumb mb-0 p-0">
                         <li class="breadcrumb-item"><a href="{% url 'main:index' %}">Dashboard</i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">{{branch.company.name}}</li>
-                        <li class="breadcrumb-item active" aria-current="page">{{branch.name}}</li>
-                        <li class="breadcrumb-item active" aria-current="page">Transfer a Product</li>
+                        <li class="breadcrumb-item active" aria-current="page">{{company.name}}</li>
+                        <li class="breadcrumb-item active" aria-current="page">Create transfer Order</li>
                     </ol>
                 </nav>
             </div>
@@ -60,23 +59,35 @@
                         <form class="row g-3" method="post">
                             {% csrf_token %}
                             <div class="col-md-12">
+                                <label for="input1" class="form-label">Transfer Order</label>
+                                {{ form.transfer_order }}
+                            </div>
+                            <div class="col-md-12">
+                                <label for="input1" class="form-label">Reason</label>
+                                {{ form.reason }}
+                            </div>
+                            <div class="col-md-12">
+                                <label for="input1" class="form-label">Source Warehouse</label>
+                                {{ form.source_warehouse }}
+                            </div>
+                            <div class="col-md-12">
+                                <label for="input1" class="form-label">Destination Warehouse</label>
+                                {{ form.destination_warehouse }}
+                            </div>
+                            <div class="col-md-12">
                                 <label for="input1" class="form-label">Product</label>
-                                {{ form.product}}
+                                {{ form.product }}
                             </div>
                             <div class="col-md-12">
                                 <label for="input1" class="form-label">Quantity</label>
-                                {{ form.quantity}}
-                            </div>
-                            <div class="col-md-12">
-                                <label for="input1" class="form-label">Destination</label>
-                                {{ form.to_branch}}
+                                {{ form.quantity }}
                             </div>
                             
-                           
                             <div class="form-row text-center">
                                 <button type="submit" class="btn btn-primary">Submit</button>
-                               </div>
+                            </div>
                         </form>
+                        
                     </div>
                 </div>
             </div>

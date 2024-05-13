@@ -1,0 +1,92 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-content">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 col-xl-6">
+                                <h4 class="card-title">{{product.name}}</h4>
+                            </div>
+                            <div class="col-lg-6 col-xl-6">
+                                <form class="float-lg-end">
+                                    <div class="row row-cols-lg-2 row-cols-xl-auto g-2">
+                                        <div class="col">
+                                            <div class="position-relative">
+                                                <a href="{% url 'inventory:edit_composite_product' product.id %}" class="btn btn-primary mb-3 mb-lg-0"><i class='bx bxs-edit'></i>Edit</a>
+                                            </div>
+                                        </div>
+                                       
+                                       
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row g-0">
+              <div class="col-md-12">
+                <div class="card-body">
+                  <h4 class="card-title">{{product.name}}</h4>
+                  <p class="card-text fs-6">Ksh. {{product.buying_price}}</p>
+                  <p class="card-text fs-6">Ksh. {{product.selling_price}}</p>
+                  <p class="card-text fs-6">{{product.description}}</p>
+                  <h6 class="text-uppercase mb-0 mt-4">Associated Products</h6>
+					<hr/>
+                     <div class="row row-cols-1 row-cols-lg-3">
+						   {% for item in products %}
+                           <div class="col">
+							<div class="card">
+								<div class="row g-0">
+								  <div class="col-md-4">
+                                    {% if item.product.image %}
+                                    <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.product.name }}">
+                                    {% else %}
+                                    <img src="{% static 'default/default_product_image.png' %}" class="card-img-top" alt="Default Image">
+                                    {% endif %}
+								  </div>
+								  <div class="col-md-8">
+									<div class="card-body">
+									 <a href="  {% url 'inventory:product' item.id %}">  <h6 class="card-title">{{item.name}}</h6></a>
+									  <div class="clearfix">
+										<p class="mb-0 float-start fw-bold">Selling Price:{{item.selling_price}}</p>
+                                        <p class="mb-0 float-start fw-bold">Buying Price:{{item.buying_price}}</p>
+									 </div>
+									</div>
+								  </div>
+								</div>
+							  </div>
+						   </div>
+                           {% endfor %}
+                         
+						  
+					   </div>
+                </div>
+              </div>
+            </div>
+            
+
+          </div>
+
+            
+          
+    </div>
+
+      
+
+
+    </div>
+</div>
+
+{% endblock content %}
+

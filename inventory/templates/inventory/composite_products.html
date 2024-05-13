@@ -1,0 +1,72 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-content">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 col-xl-6">
+                                <a href="{% url 'inventory:create_composite_products' %}" class="btn btn-primary mb-3 mb-lg-0"><i class='bx bxs-plus-square'></i>New Composite Product</a>
+                            </div>
+                            <div class="col-lg-6 col-xl-6">
+                                <form class="float-lg-end">
+                                    <div class="row row-cols-lg-2 row-cols-xl-auto g-2">
+                                        <div class="col">
+                                            <div class="position-relative">
+                                                <input type="text" class="form-control ps-5" placeholder="Search Product..."> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
+                                            </div>
+                                        </div>
+                                       
+                                       
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       {% if products %}
+       
+<div class="table-responsive">
+    <table class="table mb-0">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+               
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <a href="{% url 'inventory:composite_product_detail' product.id %}"><i class='bx bxs-folder ml-2'></i>{{ product.name }}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+      
+       {% else %}
+       <h4>No products Available</h4>
+       {% endif %}
+
+
+    </div>
+</div>
+
+{% endblock content %}
+
+
+
+

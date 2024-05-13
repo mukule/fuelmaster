@@ -1,0 +1,68 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-content">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-lg-3 col-xl-2">
+                                <a href="{% url 'inventory:create_company_products' %}" class="btn btn-primary mb-3 mb-lg-0"><i class='bx bxs-plus-square'></i>New Product</a>
+                            </div>
+                            <div class="col-lg-9 col-xl-10">
+                                <form class="float-lg-end">
+                                    <div class="row row-cols-lg-2 row-cols-xl-auto g-2">
+                                        <div class="col">
+                                            <div class="position-relative">
+                                                <input type="text" class="form-control ps-5" placeholder="Search Product..."> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
+                                            </div>
+                                        </div>
+                                       
+                                       
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       {% if products %}
+       <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 product-grid">
+        {% for product in products %}
+       <a href="{% url 'inventory:product' product.id %}">
+        <div class="col">
+            <div class="card text-center">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% else %}
+                <img src="{% static 'default/default_product_image.png' %}" class="card-img-top" alt="Default Image">
+                {% endif %}
+                <div class="card-body">
+                    <h6 class="card-title text-secondary">{{ product.name }}</h6>
+                   <p class="card-text text-secondary">Available Stock: {{product.quantity}} {{product.unit}}</p>
+                   <p class="card-text text-secondary">Selling Price: ksh. {{product.selling_price}}</p>
+                   <p class="card-text text-secondary">Cost Price Ksh. {{product.buying_price}}</p>
+
+                </div>
+            </div>
+        </div>
+       </a>
+        {% endfor %}
+        
+    </div><!--end row-->
+       {% else %}
+       <h4>No products Available</h4>
+       {% endif %}
+
+
+    </div>
+</div>
+
+{% endblock content %}

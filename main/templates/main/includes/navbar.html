@@ -13,41 +13,92 @@
     <!--navigation-->
     <ul class="metismenu" id="menu">
         <li>
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class="bx bx-menu"></i>
+                </div>
+                <div class="menu-title">Branches</div>
+            </a>
+            <ul>
+               {% if branches %}
+              {% for branch in branches %}
+            
+              <li> <a href=""><i class='bx bx-radio-circle'></i>  {{branch.name}}</a>
+              {%endfor%}
+               {% endif %}
+               <li> <a href="{% url 'company:add_branch' company_id %}"><i class="bx bxs-plus-square"></i>Add Branch</a>
+            </ul>
+        </li>
+        <li>
             <a class="has-arrow" href="javascript:;">
                 <div class="parent-icon"><i class="bx bx-menu"></i>
                 </div>
                 <div class="menu-title">Inventory</div>
             </a>
             <ul>
-                <li> <a href="{% url 'inventory:virtual_warehouse' %}"><i class='bx bx-radio-circle'></i>Virtual Warehouse</a>
+                <li> <a href="{% url 'inventory:company_products' %}"><i class='bx bx-radio-circle'></i>Items</a>
                 </li>
-                <li> <a class="has-arrow" href="javascript:;"><i class='bx bx-radio-circle'></i>Warehouse</a>
-                    <ul>
-                        <li> <a href="{% url 'inventory:transfers' %}"><i class='bx bx-radio-circle'></i>Stock Transfer</a>
-                        </li>
-                        <li> <a class="has-arrow" href="javascript:;"><i class='bx bx-radio-circle'></i>Purchases</a>
-                            <ul>
-                                <li> <a href="{% url 'inventory:orders' %}"><i class='bx bx-radio-circle'></i>Orders</a>
-                                </li>
-                                <li> <a href="{% url 'inventory:receivings' %}"><i class='bx bx-radio-circle'></i>Receivings</a>
-                                </li>
-                                <li> <a href="{% url 'inventory:bills' %}"><i class='bx bx-radio-circle'></i>Bills</a>
-                                </li>
-                              
-                            </ul>
-                            
-                        </li>
-                    </ul>
-                    <li> <a href="{% url 'main:branch' %}"><i class='bx bx-radio-circle'></i>Products</a>
-                    </li>
-                    <li> <a href="{% url 'inventory:suppliers' %}"><i class='bx bx-radio-circle'></i>Suppliers</a>
-                    </li>
+                <li> <a href="{% url 'inventory:composite_products' %}"><i class='bx bx-radio-circle'></i>Composite Items</a>
                 </li>
+                </li>
+                <li> <a href="{% url 'inventory:company_adjustments' %}"><i class='bx bx-radio-circle'></i>Adjustments</a>
+                </li>
+                <li> <a href="{% url 'inventory:transfers' %}"><i class='bx bx-radio-circle'></i>Transfer Orders</a>
+                </li>
+              
                 
             </ul>
         </li>
         
-       
+        <li>
+            <a class="has-arrow" href="javascript:;">
+                <div class="parent-icon"><i class="bx bx-menu"></i>
+                </div>
+                <div class="menu-title">Warehouse</div>
+            </a>
+            <ul>
+                {% if warehouses %}
+               {% for warehouse in warehouses %}
+             
+               <li> <a href=""><i class='bx bx-radio-circle'></i>  {{warehouse.name}}</a>
+               {%endfor%}
+                {% endif %}
+                <li> <a href="{% url 'inventory:create_warehouse' %}"><i class="bx bxs-plus-square"></i>Add Warehouse</a>
+             </ul>
+        </li>
+
+        <li>
+            <a class="has-arrow" href="javascript:;">
+                <div class="parent-icon"><i class="bx bx-menu"></i>
+                </div>
+                <div class="menu-title">Accounts</div>
+            </a>
+            <ul>
+                <li> <a class="has-arrow" href="javascript:;"><i class='bx bx-radio-circle'></i>Purchases</a>
+                    
+                    <ul>
+                        {% if purchases_accounts %}
+                        {% for account in purchases_accounts %}
+                        <li> <a href="javascript:;"><i class='bx bx-radio-circle'></i>{{account.name}}</a>
+                        </li>
+                        {% endfor %}
+                         {% endif %}
+                        <li> <a href="{% url 'inventory:create_purchases_account' %}"><i class="bx bxs-plus-square"></i>Add Account</a>
+                    </ul>
+                </li>
+                <li> <a class="has-arrow" href="javascript:;"><i class='bx bx-radio-circle'></i>Sales</a>
+                    
+                    <ul>
+                        {% if sales_accounts %}
+                       {% for account in sales_accounts %}
+                       <li> <a href="javascript:;"><i class='bx bx-radio-circle'></i>{{account.name}}</a>
+                       </li>
+                       {% endfor %}
+                        {% endif %}
+                        <li> <a href="{% url 'inventory:create_sales_account' %}"><i class="bx bxs-plus-square"></i>Add Account</a>
+                    </ul>
+                </li>
+            </ul>
+        </li>
         
        
         

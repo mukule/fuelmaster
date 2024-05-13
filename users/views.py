@@ -156,8 +156,7 @@ def custom_login(request):
 
                 # Check access level and assigned branch
                 if user.access_level in [1, 2] and user.branch:
-                    return redirect('company:branch_detail', branch_id=user.branch.pk)
-
+                    return redirect('company:company_detail', pk=user.company.pk)
                 return redirect("main:index")
 
         else:

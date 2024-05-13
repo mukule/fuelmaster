@@ -6,6 +6,7 @@ from inventory.models import *
 from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def create_company(request):
     if request.method == 'POST':
         form = CompanyForm(request.POST)
@@ -17,6 +18,7 @@ def create_company(request):
     return render(request, 'company/create_company.html', {'form': form})
 
 
+@login_required
 def company_detail_view(request, pk):
     company = get_object_or_404(Company, pk=pk)
     user_branch = request.user.branch
@@ -35,6 +37,7 @@ def company_detail_view(request, pk):
     return render(request, 'company/company_detail.html', context)
 
 
+@login_required
 def create_branch(request, company_id):
     company = get_object_or_404(Company, pk=company_id)
 

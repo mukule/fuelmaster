@@ -9,8 +9,8 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     user = request.user
     if user.is_authenticated and user.access_level in [1, 2]:
-        if user.branch:
-            return redirect('company:branch_detail', branch_id=user.branch.pk)
+        if user.company:
+            return redirect('company:company_detail', pk=user.company.pk)
 
     company_count = Company.objects.count()
     branch_count = Branch.objects.count()

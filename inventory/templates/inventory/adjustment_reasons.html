@@ -1,0 +1,72 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-content">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 col-xl-6">
+                                <a href="{% url 'inventory:create_adjustment_reason' %}" class="btn btn-primary mb-3 mb-lg-0"><i class='bx bxs-plus-square'></i>New Adjustment Reason</a>
+                            </div>
+                            <div class="col-lg-6 col-xl-6">
+                                <form class="float-lg-end">
+                                    <div class="row row-cols-lg-2 row-cols-xl-auto g-2">
+                                        <div class="col">
+                                            <div class="position-relative">
+                                                <input type="text" class="form-control ps-5" placeholder="Search Reason.."> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
+                                            </div>
+                                        </div>
+                                       
+                                       
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       {% if reasons %}
+       
+<div class="table-responsive">
+    <table class="table mb-0">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+               
+            </tr>
+        </thead>
+        <tbody>
+            {% for reason in reasons %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    {{ reason.name }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+      
+       {% else %}
+       <h4>No Adjustment Reasons Available</h4>
+       {% endif %}
+
+
+    </div>
+</div>
+
+{% endblock content %}
+
+
+
+

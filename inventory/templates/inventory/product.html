@@ -1,0 +1,42 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-content">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 col-xl-6">
+                                <h4 class="card-title">{{product.name}}</h4>
+                            </div>
+                            <div class="col-lg-6 col-xl-6">
+                                <form class="float-lg-end">
+                                    <div class="row row-cols-lg-2 row-cols-xl-auto g-2">
+                                        <div class="col">
+                                            <div class="position-relative">
+                                                <a href="{% url 'inventory:edit_product' product.id %}" class="btn btn-primary mb-3 mb-lg-0"><i class='bx bxs-edit'></i>Edit</a>
+                                            </div>
+                                        </div>
+                                       
+                                       
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+      
+
+
+    </div>
+</div>
+
+{% endblock content %}

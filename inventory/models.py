@@ -1,6 +1,42 @@
 from django.db import models
 from company.models import *
 from users.models import *
+from django.utils import timezone
+
+
+class Warehouse(models.Model):
+    name = models.CharField(max_length=100)
+    county = models.CharField(max_length=100, null=True, blank=True)
+    country = models.CharField(max_length=100, null=True, blank=True)
+    city = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20)
+    email = models.EmailField()
+    branch = models.ForeignKey(
+        Branch, on_delete=models.CASCADE, related_name='warehouses'
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class SalesAccount(models.Model):
+    name = models.CharField(max_length=100)
+
+    branch = models.ForeignKey(
+        Branch, on_delete=models.CASCADE, related_name='sales_accounts', null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class PurchasesAccount(models.Model):
+    name = models.CharField(max_length=100)
+
+    branch = models.ForeignKey(
+        Branch, on_delete=models.CASCADE, related_name='purchases_accounts', null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Category(models.Model):
@@ -13,7 +49,6 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=100)
@@ -21,7 +56,32 @@ class Product(models.Model):
         max_length=50, unique=True, null=True, blank=True)
     quantity = models.FloatField(null=True, blank=True)
     unit = models.CharField(max_length=20, null=True, blank=True)
-    price = models.DecimalField(
+    description = models.TextField(null=True, blank=True)
+    sales_account = models.ForeignKey(
+        SalesAccount, on_delete=models.SET_NULL, null=True, blank=True)
+    selling_price = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True)
+    buying_price = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True)
+    purchases_account = models.ForeignKey(
+        PurchasesAccount, on_delete=models.SET_NULL, null=True, blank=True)
+    warehouse = models.ForeignKey(
+        Warehouse, on_delete=models.SET_NULL, null=True, blank=True)
+    image = models.ImageField(upload_to='product_images',
+                              default='default_product_image.jpg', null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class CompositeProduct(models.Model):
+    name = models.CharField(max_length=100)
+    components = models.ManyToManyField(
+        'Product', related_name='composite_of')
+    description = models.TextField(null=True, blank=True)
+    buying_price = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True)
+    selling_price = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
@@ -136,3 +196,49 @@ class Bill(models.Model):
 
     def __str__(self):
         return f"Bill for Order #{self.order.order_number}"
+
+
+class AdjustmentReason(models.Model):
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE, related_name='adjustmentReason', null=True, blank=True)
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+class Adjustment(models.Model):
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE, related_name='adjustments', null=True, blank=True)
+    ref_number = models.CharField(max_length=100)
+    reason = models.ForeignKey(AdjustmentReason, on_delete=models.CASCADE)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
+    description = models.TextField(null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.FloatField()
+    adjusted_quantity = models.FloatField(null=True, blank=True)
+    adjusted_by = models.ForeignKey(
+        CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.ref_number
+
+
+class Transfer(models.Model):
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE, related_name='transfers', null=True, blank=True)
+    transfer_order = models.CharField(max_length=100)
+    date = models.DateField(default=timezone.now)
+    reason = models.CharField(max_length=255)
+    source_warehouse = models.ForeignKey(
+        Warehouse, related_name='source_transfers', on_delete=models.CASCADE)
+    destination_warehouse = models.ForeignKey(
+        Warehouse, related_name='destination_transfers', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.FloatField()
+    transfer_by = models.ForeignKey(
+        CustomUser, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.transfer_order
